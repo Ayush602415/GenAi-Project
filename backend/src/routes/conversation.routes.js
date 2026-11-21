@@ -1,0 +1,16 @@
+import { Router } from "express";
+import { validate } from "../middleware/validate.middleware.js";
+import { createMessageValidator } from "../validators/conversation.validator.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
+
+/**
+ * Registers conversation endpoints.
+ * @returns {Router}
+ */
+export function conversationRoutes() {
+  const router = Router();
+  router.post("/",requireAuth,createMessageValidator,validate);
+  return router;
+}
+
+export default conversationRoutes()

@@ -1,0 +1,21 @@
+import { Router } from "express";
+import { login, logout, me, refresh, register } from "../controller/auth.controller.js";
+import { loginValidator, registerValidator } from "../validators/auth.validator.js";
+import { validate } from "../middleware/validate.middleware.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
+
+/**
+ * Registers the authentication endpoints.
+ * @returns {Router}
+ */
+export function authRoutes() {
+  const router = Router();
+  router.post("/register", registerValidator, validate, register);
+  router.post("/login", loginValidator, validate, login);
+  router.post("/refresh", refresh);
+  router.post("/logout", logout);
+  router.get("/me", requireAuth, me);
+  return router;
+}
+
+export default authRoutes();
