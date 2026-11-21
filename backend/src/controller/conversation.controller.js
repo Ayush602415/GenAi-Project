@@ -1,12 +1,12 @@
-import AppError from "../utils/AppError.js";
-import { generateTitle } from "../services/ai/title.model.services.js";
+import { AIMessage, HumanMessage } from "langchain";
 import {
   createConversation,
   findConversationByIdForUser,
-} from "../DAO/conversation.dao.js";
-import model from "../services/ai/main.model.js";
-import { createMessage, getMessagesByConversation } from "../DAO/message.dao.js";
-import { AIMessage, HumanMessage } from "langchain";
+} from "../DAO/conversation.dao";
+import { createMessage, getMessagesByConversation } from "../DAO/message.dao";
+import { generateTitle } from "../services/ai/title.model.services";
+import AppError from "../utils/AppError";
+import model from "../services/ai/main.model";
 
 export async function createConversationController(req, res, next) {
   const { content, conversation: conversationId } = req.body;
@@ -18,41 +18,40 @@ export async function createConversationController(req, res, next) {
   } else {
     conversation = await findConversationByIdForUser(conversationId, user.id);
     if (!conversation) {
-      return next(new AppError(404, "Conversation not found"));
+      return next(new AppError(404, "Converstaion not found"));
     }
   }
   const messages = (await getMessagesByConversation(conversation.id))
     .map((msg) => {
       if (msg.role === "user") {
-        return new HumanMessage(msg.content);
+        return new HumanMessage(content);
       } else if (msg.role === "assistant") {
-        return new AIMessage(msg.content);
+        return new AIMessage(content);
       } else {
         return null;
       }
     })
     .filter(Boolean);
-
   messages.push(new HumanMessage(content));
 
-  await createMessage({
+  createMessage({
     role: "user",
     conversation: conversation._id,
-    content: content
-  })
+    content: content,
+  });
 
   const stream = await model.stream(messages);
- //Server Sent Events (SSE) Headers
-  res.setHeader("Content-Type", "text/event-stream")
-  res.setHeader("Cache-Control", "no-cache")
-  res.setHeader("Connection", "keep-alive")
+  // Server Sent Events (SSE) Headers
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
 
-  res.write(`data: ${JSON.stringify({
-    conversationId: conversation.id,
-    title: conversation.title
-  })}\n\n`)
+  res.write(
+    `data: ${JSON.stringify({ conversationId: conversation.id, title: conversation.title })}\n\n`,
+  );
 
   let aiChunk = null;
+
   try {
     for await (const chunk of stream) {
       if (aiChunk == null) {
@@ -62,21 +61,22 @@ export async function createConversationController(req, res, next) {
       }
       res.write(`data: ${JSON.stringify({ chunk: chunk.content })}\n\n`);
     }
+
     await createMessage({
       role: "assistant",
       conversation: conversation._id,
       content: aiChunk?.content ?? "",
     });
+
     res.end();
   } catch (error) {
     console.error("Conversation response stream failed:", error);
-    res.write(`event: error\ndata: ${JSON.stringify({
-      success: false,
-      message: "Failed to generate a response",
-    })}\n\n`);
+    res.write(
+      `event: error\ndata: ${JSON.stringify({
+        success: false,
+        message: "Failed to generate a response",
+      })}\n\n`,
+    );
     res.end();
   }
 }
-
-
-
