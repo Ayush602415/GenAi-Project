@@ -12,7 +12,7 @@ Downbot is an authentication-only foundation for an AI chat application. It cont
 1. Copy `backend/.env.example` to `backend/.env` and set two different, strong token secrets.
 2. In `backend`, run `npm install` and `npm run dev`.
 3. In `frontend`, run `npm install` and `npm run dev`.
-4. Open the Vite URL (usually `http://localhost:5173`). Vite proxies `/api` requests to `http://localhost:5000`; the backend does not enable CORS.
+4. Open the Vite URL (usually `http://localhost:5173`). Vite proxies `/api` requests to `http://localhost:3000`; the backend does not enable CORS.
 
 Authentication screens and each feature's request/API, state, hooks, and UI code are organized under `frontend/src/features/auth`.
 
