@@ -1,7 +1,7 @@
 import {ChatGroq} from "@langchain/groq"
 import * as z from "zod"
-import { env } from "../../config/env"
 import {SystemMessage, HumanMessage} from "langchain"
+import { env } from "../../config/env.js"
 
 const model = new ChatGroq({
     model: "qwen/qwen3.8-27b",

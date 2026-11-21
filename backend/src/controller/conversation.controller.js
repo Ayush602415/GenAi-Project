@@ -1,6 +1,4 @@
 import AppError from "../utils/AppError.js";
-import { sendSuccess } from "../utils/apiResponse.js";
-import { env } from "../config/env.js";
 import { generateTitle } from "../services/ai/title.model.services.js";
 import {
   createConversation,
@@ -55,21 +53,29 @@ export async function createConversationController(req, res, next) {
   })}\n\n`)
 
   let aiChunk = null;
-  for await (const chunk of stream) {
-    if (aiChunk == null) {
-      aiChunk = chunk;
-    } else {
-      aiChunk = aiChunk.concat(chunk);
+  try {
+    for await (const chunk of stream) {
+      if (aiChunk == null) {
+        aiChunk = chunk;
+      } else {
+        aiChunk = aiChunk.concat(chunk);
+      }
+      res.write(`data: ${JSON.stringify({ chunk: chunk.content })}\n\n`);
     }
-    res.write(`data: ${JSON.stringify({chunk: chunk.content})}\n\n`)
+    await createMessage({
+      role: "assistant",
+      conversation: conversation._id,
+      content: aiChunk?.content ?? "",
+    });
+    res.end();
+  } catch (error) {
+    console.error("Conversation response stream failed:", error);
+    res.write(`event: error\ndata: ${JSON.stringify({
+      success: false,
+      message: "Failed to generate a response",
+    })}\n\n`);
+    res.end();
   }
-  res.end()
-
-  await createMessage({
-    role: "assistant",
-    conversation: conversation._id,
-    content: content
-  })
 }
 
 

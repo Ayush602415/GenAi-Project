@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authRouter from "./auth.routes.js";
-import { conversationRoutes } from "../services/conversation.routes.js";
+import { conversationRoutes } from "./conversation.routes.js";
 
 const router = Router();
 router.use("/auth", authRouter);

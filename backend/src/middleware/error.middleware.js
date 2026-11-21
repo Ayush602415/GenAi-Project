@@ -10,6 +10,8 @@ import { env } from "../config/env.js";
  * @returns {void}
  */
 export function errorMiddleware(error, req, res, next) {
+  if (res.headersSent) return next(error);
+
   let statusCode = 500;
   let message = "Internal server error";
   let errors = [];
