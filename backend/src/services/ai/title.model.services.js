@@ -19,6 +19,6 @@ export async function generateTitle(message){
         Return only the generated title without explanations or extra text.`
     )
     const humanMessage = new HumanMessage(message)
-    const response = structuredModel.invoke([systemMessage , humanMessage])
+    const response = await structuredModel.invoke([systemMessage , humanMessage])
     return response
 }
