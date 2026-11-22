@@ -1,4 +1,4 @@
-import { createUser, findUserByEmail, findUserByIdWithRefreshToken, updateRefreshToken, clearRefreshToken } from "../DAO/user.dao.js";
+import { createUser, findUserByEmail, findUserById, findUserByIdWithRefreshToken, updateRefreshToken, clearRefreshToken } from "../DAO/user.dao.js";
 import AppError from "../utils/AppError.js";
 import { sendSuccess } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -112,5 +112,7 @@ export const logout = asyncHandler(async (req, res) => {
  * @type {import("express").RequestHandler}
  */
 export const me = asyncHandler(async (req, res) => {
-  return sendSuccess(res, 200, "Profile loaded", { user: toPublicUser(req.user) });
+  const user = await findUserById(req.user.id);
+  if (!user) throw new AppError(404, "User not found");
+  return sendSuccess(res, 200, "Profile loaded", { user: toPublicUser(user) });
 });

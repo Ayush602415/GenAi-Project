@@ -15,5 +15,5 @@ export async function createMessage(input) {
  * @returns {Promise<Array<import("mongoose").HydratedDocument<object>>>}
  */
 export async function getMessagesByConversation(conversationId) {
-  return MessageModel.find({ conversation: conversationId })
+  return MessageModel.find({ conversation: conversationId }).sort({ createdAt: 1 });
 }

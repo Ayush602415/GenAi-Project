@@ -6,7 +6,7 @@ export const authClient = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-export const ConversationClient = await fetch("/api/v1/conversation")
+
 
 let accessToken = null;
 let refreshInFlight = null;
@@ -18,6 +18,10 @@ let refreshInFlight = null;
  */
 export function setAccessToken(token) {
   accessToken = token;
+}
+
+export function getAccessToken() {
+  return accessToken;
 }
 
 authClient.interceptors.request.use((config) => {
@@ -58,15 +62,6 @@ export function refreshRequest() {
       });
   }
   return refreshInFlight;
-}
-
-/**
- * Loads the current user's profile.
- * @returns {Promise<object>} Public user profile.
- */
-export async function meRequest() {
-  const { data } = await authClient.get("/auth/me");
-  return data.data.user;
 }
 
 /**

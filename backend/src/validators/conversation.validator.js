@@ -11,5 +11,6 @@ export const createMessageValidator = [
     .trim()
     .notEmpty().withMessage("Content is required"),
   body("conversation")
+    .optional()
     .isMongoId().withMessage("Conversation must be a valid ID"),
 ];

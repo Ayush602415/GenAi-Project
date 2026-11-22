@@ -34,7 +34,6 @@ button:disabled {
 }
 
 .chat-shell {
-  --chat-surface: #171719;
   --chat-border: rgba(255, 255, 255, 0.075);
   display: flex;
   width: 100%;
@@ -268,13 +267,6 @@ button:disabled {
 .logout-button {
   width: 32px;
   height: 32px;
-}
-
-.sidebar-error {
-  margin: 12px 3px;
-  color: #fda4af;
-  font-size: 11px;
-  line-height: 1.5;
 }
 
 .chat-main {
@@ -790,4 +782,30 @@ button:disabled {
   .composer {
     padding: 12px 12px 9px 14px;
   }
+}
+.message-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+}
+
+.message-content th,
+.message-content td {
+  border: 1px solid #444;
+  padding: 10px;
+  text-align: left;
+}
+
+.message-content th {
+  font-weight: 600;
+}
+
+.message-content pre {
+  overflow-x: auto;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.message-content code {
+  overflow-wrap: anywhere;
 }

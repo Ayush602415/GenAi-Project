@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   loginRequest,
   logoutRequest,
-  meRequest,
   refreshRequest,
   registerRequest,
   setAccessToken,
@@ -49,8 +48,7 @@ export const restoreSession = createAsyncThunk("auth/restoreSession", async () =
   try {
     const session = await refreshRequest();
     setAccessToken(session.accessToken);
-    const user = await meRequest();
-    return { ...session, user };
+    return session;
   } catch (error) {
     setAccessToken(null);
     throw error;
@@ -62,9 +60,7 @@ export const logoutUser = createAsyncThunk("auth/logout", async () => {
   setAccessToken(null);
 });
 
-export const getConversation = createAsyncThunk("/conversation", async()=>{
 
-})
 
 const authSlice = createSlice({
   name: "auth",

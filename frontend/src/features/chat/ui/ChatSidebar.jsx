@@ -1,14 +1,24 @@
 import { BrandMark } from "../../auth/ui/BrandMark.jsx";
 import { ChatIcon, UserAvatar } from "./ChatIcon.jsx";
 
-const recentConversations = [
-  "Ideas for a weekend project",
-  "A simple meal prep plan",
-  "Understanding neural networks",
-  "Notes for my presentation",
-];
+function formatConversationDate(conversation) {
+  const date = new Date(conversation.updatedAt || conversation.createdAt);
+  if (Number.isNaN(date.getTime())) return "";
+  if (date.toDateString() === new Date().toDateString()) return "Today";
+  return date.toLocaleDateString([], { month: "short", day: "numeric" });
+}
 
-export function ChatSidebar({ user, onClose }) {
+export function ChatSidebar({
+  user,
+  conversations,
+  activeConversationId,
+  conversationsStatus,
+  isSending,
+  onClose,
+  onNewConversation,
+  onSelectConversation,
+  onLogout,
+}) {
   return (
     <>
       <button
@@ -24,7 +34,11 @@ export function ChatSidebar({ user, onClose }) {
           </button>
         </div>
 
-        <button className="new-chat-button">
+        <button
+          className="new-chat-button"
+          onClick={onNewConversation}
+          disabled={isSending}
+        >
           <ChatIcon name="plus" className="h-[18px] w-[18px]" />
           <span>New conversation</span>
           <span className="new-chat-shortcut">⌘ K</span>
@@ -32,17 +46,25 @@ export function ChatSidebar({ user, onClose }) {
 
         <div className="history-heading">
           <span>Your conversations</span>
-          <span className="history-count">{recentConversations.length}</span>
+          <span className="history-count">{conversations.length}</span>
         </div>
         <nav className="conversation-list" aria-label="Conversation history">
-          {recentConversations.map((title, index) => (
+          {conversationsStatus === "loading" && (
+            <div className="history-loading"><span /> Loading conversations</div>
+          )}
+          {conversationsStatus !== "loading" && conversations.length === 0 && (
+            <p className="history-empty">Your chats will show up here.</p>
+          )}
+          {conversations.map((conversation) => (
             <button
-              key={title}
-              className={`conversation-link${index === 0 ? " selected" : ""}`}
+              key={conversation._id}
+              className={`conversation-link${activeConversationId === conversation._id ? " selected" : ""}`}
+              onClick={() => onSelectConversation(conversation._id)}
+              disabled={isSending}
             >
               <ChatIcon name="message" className="h-4 w-4 shrink-0" />
-              <span className="conversation-title">{title}</span>
-              <span className="conversation-date">{index === 0 ? "Today" : "Nov 18"}</span>
+              <span className="conversation-title">{conversation.title || "New conversation"}</span>
+              <span className="conversation-date">{formatConversationDate(conversation)}</span>
             </button>
           ))}
         </nav>
@@ -53,7 +75,7 @@ export function ChatSidebar({ user, onClose }) {
             <span className="profile-name">{user?.name || "Your account"}</span>
             <span className="profile-email">{user?.email || "Signed in"}</span>
           </div>
-          <button className="icon-button logout-button" aria-label="Account options" title="Account options">
+          <button onClick={onLogout} className="icon-button logout-button" aria-label="Sign out" title="Sign out">
             <ChatIcon name="logout" className="h-[18px] w-[18px]" />
           </button>
         </div>
