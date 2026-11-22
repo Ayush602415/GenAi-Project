@@ -2,7 +2,7 @@ import { Router } from "express";
 import { validate } from "../middleware/validate.middleware.js";
 import { createMessageValidator } from "../validators/conversation.validator.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
-import { createConversationController } from "../controller/conversation.controller.js";
+import { createConversationController, getAllConversations, getMessagesByConversation } from "../controller/conversation.controller.js";
 
 
 /**
@@ -12,6 +12,8 @@ import { createConversationController } from "../controller/conversation.control
 export function conversationRoutes() {
   const router = Router();
   router.post("/", requireAuth, createMessageValidator, validate , createConversationController);
+  router.get("/",requireAuth,getAllConversations)
+  router.get("/messages/:conversationId",requireAuth,getMessagesByConversation)
   return router;
 }
 

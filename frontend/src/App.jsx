@@ -1,6 +1,6 @@
 import { useAuth, useInitializeAuth } from "./features/auth/hooks/useAuth.js";
 import { AuthPage } from "./features/auth/ui/AuthPage.jsx";
-import { WelcomePage } from "./features/auth/ui/WelcomePage.jsx";
+import { ChatPage } from "./features/chat/ui/ChatPage.jsx";
 
 export default function App() {
   useInitializeAuth();
@@ -17,5 +17,5 @@ export default function App() {
     );
   }
 
-  return status === "authenticated" ? <WelcomePage /> : <AuthPage />;
+  return status === "authenticated" ? <ChatPage /> : <AuthPage />;
 }

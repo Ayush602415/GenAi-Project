@@ -19,4 +19,12 @@ export async function findConversationByIdForUser(id, userId) {
   return ConversationModel.findOne({ _id: id, user: userId })
 }
 
+/**
+ * Finds a conversation owned by a specific user.
+ * @param {string} id Conversation identifier.
+ * @param {string} userId User identifier.
+ */
 
+export async function findConversationByUser(userId){
+  return ConversationModel.find({user: userId})
+}

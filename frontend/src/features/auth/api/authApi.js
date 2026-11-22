@@ -6,6 +6,8 @@ export const authClient = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+export const ConversationClient = await fetch("/api/v1/conversation")
+
 let accessToken = null;
 let refreshInFlight = null;
 

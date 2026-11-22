@@ -2,11 +2,13 @@ import { AIMessage, HumanMessage } from "langchain";
 import {
   createConversation,
   findConversationByIdForUser,
+  findConversationByUser,
 } from "../DAO/conversation.dao";
 import { createMessage, getMessagesByConversation } from "../DAO/message.dao";
 import { generateTitle } from "../services/ai/title.model.services";
 import AppError from "../utils/AppError";
 import model from "../services/ai/main.model";
+import { sendSuccess } from "../utils/apiResponse";
 
 export async function createConversationController(req, res, next) {
   const { content, conversation: conversationId } = req.body;
@@ -79,4 +81,26 @@ export async function createConversationController(req, res, next) {
     );
     res.end();
   }
+}
+
+export async function getAllConversations(req, res, next) {
+  const user = req.user;
+  const conversation = await findConversationByUser(user.id);
+  return sendSuccess(res, 200, "Conversation fetched successfully", {
+    conversation,
+  });
+}
+
+export async function getMessagesByConversation(req, res) {
+  const { conversationId } = req.params;
+  const user = req.user;
+  const conversation = await findConversationByIdForUser(
+    conversationId,
+    user.id,
+  );
+  if (!conversation) {
+    return next(new AppError(404, "Conversation not found"));
+  }
+  const messages = await getMessagesByConversation(conversation.id);
+  return sendSuccess(res, 200, "Messages fetched successfully", { messages });
 }
