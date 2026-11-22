@@ -3,12 +3,15 @@ import {
   createConversation,
   findConversationByIdForUser,
   findConversationByUser,
-} from "../DAO/conversation.dao";
-import { createMessage, getMessagesByConversation } from "../DAO/message.dao";
-import { generateTitle } from "../services/ai/title.model.services";
-import AppError from "../utils/AppError";
-import model from "../services/ai/main.model";
-import { sendSuccess } from "../utils/apiResponse";
+} from "../DAO/conversation.dao.js";
+import {
+  createMessage,
+  getMessagesByConversation as getConversationMessages,
+} from "../DAO/message.dao.js";
+import { generateTitle } from "../services/ai/title.model.services.js";
+import AppError from "../utils/AppError.js";
+import model from "../services/ai/main.model.js";
+import { sendSuccess } from "../utils/apiResponse.js";
 
 export async function createConversationController(req, res, next) {
   const { content, conversation: conversationId } = req.body;
@@ -23,7 +26,7 @@ export async function createConversationController(req, res, next) {
       return next(new AppError(404, "Converstaion not found"));
     }
   }
-  const messages = (await getMessagesByConversation(conversation.id))
+  const messages = (await getConversationMessages(conversation.id))
     .map((msg) => {
       if (msg.role === "user") {
         return new HumanMessage(content);
@@ -91,7 +94,7 @@ export async function getAllConversations(req, res, next) {
   });
 }
 
-export async function getMessagesByConversation(req, res) {
+export async function getMessagesByConversation(req, res, next) {
   const { conversationId } = req.params;
   const user = req.user;
   const conversation = await findConversationByIdForUser(
@@ -101,6 +104,6 @@ export async function getMessagesByConversation(req, res) {
   if (!conversation) {
     return next(new AppError(404, "Conversation not found"));
   }
-  const messages = await getMessagesByConversation(conversation.id);
+  const messages = await getConversationMessages(conversation.id);
   return sendSuccess(res, 200, "Messages fetched successfully", { messages });
 }
