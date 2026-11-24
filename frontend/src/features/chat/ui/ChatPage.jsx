@@ -106,9 +106,9 @@ export function ChatPage() {
             </button>
           </div>
         )}
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto" ref={stageRef}>
+        <div className="scrollbar-neon flex min-h-0 flex-1 flex-col overflow-y-auto" ref={stageRef}>
           {isLoadingMessages ? (
-            <div className="flex items-center justify-center gap-3 p-5 text-xs text-zinc-400"><span className="h-4 w-4 animate-spin rounded-full border-2 border-violet-300/25 border-t-violet-300" /> Opening your conversation…</div>
+            <div className="flex items-center justify-center gap-3 p-5 text-xs text-emerald-100/60"><span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-300/25 border-t-lime-300" /> Opening your conversation…</div>
           ) : messages.length ? (
             <ChatThread messages={messages} user={user} isSending={isSending} />
           ) : (

@@ -49,7 +49,7 @@ export function ChatSidebar({
           <span>Your conversations</span>
           <span className="grid h-5 min-w-5 place-items-center rounded-md bg-emerald-300/[0.08] text-[10px] font-normal tracking-normal text-emerald-100/65">{conversations.length}</span>
         </div>
-        <nav className="flex min-h-0 flex-col gap-1 overflow-y-auto" aria-label="Conversation history">
+        <nav className="scrollbar-neon flex min-h-0 flex-col gap-1 overflow-y-auto" aria-label="Conversation history">
           {conversationsStatus === "loading" && (
             <div className="flex items-center gap-2 px-2 py-2.5 text-xs text-emerald-100/45"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-400" /> Loading conversations</div>
           )}
