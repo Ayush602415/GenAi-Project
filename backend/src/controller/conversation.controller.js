@@ -1,4 +1,4 @@
-import { AIMessage, HumanMessage } from "langchain";
+import { AIMessage, HumanMessage, SystemMessage } from "langchain";
 import {
   createConversation,
   findConversationByIdForUser,
@@ -56,7 +56,14 @@ export async function createConversationController(req, res, next) {
   let responseContent = "";
 
   try {
-    const stream = await model.stream(messages);
+    const stream = await model.stream([
+      new SystemMessage(`
+        - Your name is downbot
+        - 
+        `),
+      ...messages
+    ]);
+
     for await (const chunk of stream) {
       responseContent += chunk.content;
       res.write(`data: ${JSON.stringify({ chunk: chunk.content })}\n\n`);

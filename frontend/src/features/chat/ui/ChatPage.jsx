@@ -73,7 +73,7 @@ export function ChatPage() {
   }
 
   return (
-    <main className="flex h-dvh min-h-screen overflow-hidden bg-[#101012] text-zinc-100 [background-image:radial-gradient(ellipse_at_72%_0%,rgba(116,78,196,0.08),transparent_38%)]">
+    <main className="flex h-dvh overflow-hidden bg-[#101012] text-zinc-100 [background-image:radial-gradient(ellipse_at_72%_0%,rgba(116,78,196,0.08),transparent_38%)]">
       <ChatSidebar
         user={user}
         conversations={conversations}
@@ -106,7 +106,7 @@ export function ChatPage() {
             </button>
           </div>
         )}
-        <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto" ref={stageRef}>
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto" ref={stageRef}>
           {isLoadingMessages ? (
             <div className="flex items-center justify-center gap-3 p-5 text-xs text-zinc-400"><span className="h-4 w-4 animate-spin rounded-full border-2 border-violet-300/25 border-t-violet-300" /> Opening your conversation…</div>
           ) : messages.length ? (
@@ -115,11 +115,13 @@ export function ChatPage() {
             <ChatWelcome name={firstName} onPrompt={sendMessage} />
           )}
         </div>
-        <ChatComposer
-          onSend={sendMessage}
-          disabled={isLoadingMessages}
-          isSending={isSending}
-        />
+        <div className="flex items-center justify-center sticky bottom-0 z-10">
+          <ChatComposer
+            onSend={sendMessage}
+            disabled={isLoadingMessages}
+            isSending={isSending}
+          />
+        </div>
       </section>
     </main>
   );

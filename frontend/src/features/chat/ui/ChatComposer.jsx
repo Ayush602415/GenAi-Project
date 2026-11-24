@@ -16,7 +16,10 @@ export function ChatComposer({ onSend, disabled = false, isSending = false }) {
 
   return (
     <div className="w-[calc(100%-32px)] self-center pb-3 pt-4 sm:w-[min(100%-48px,780px)] sm:pb-5">
-      <form className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1e21] to-[#18181a] px-3.5 pb-2.5 pt-3.5 shadow-[0_16px_48px_rgba(0,0,0,0.17)] transition focus-within:border-violet-300/40 focus-within:shadow-[0_0_0_3px_rgba(140,103,209,0.075),0_16px_48px_rgba(0,0,0,0.17)] sm:rounded-[17px] sm:px-4 sm:pb-2.5 sm:pt-3.5" onSubmit={submit}>
+      <form
+        className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1e21] to-[#18181a] px-3.5 pb-2.5 pt-3.5 shadow-[0_16px_48px_rgba(0,0,0,0.17)] transition focus-within:border-violet-300/40 focus-within:shadow-[0_0_0_3px_rgba(140,103,209,0.075),0_16px_48px_rgba(0,0,0,0.17)] sm:rounded-[17px] sm:px-4"
+        onSubmit={submit}
+      >
         <textarea
           className="block max-h-[180px] min-h-[27px] w-full resize-none border-0 bg-transparent text-[13px] leading-7 text-zinc-100 outline-none placeholder:text-zinc-600"
           ref={textareaRef}
