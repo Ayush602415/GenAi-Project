@@ -1,4 +1,4 @@
-import { AIMessage, HumanMessage, SystemMessage } from "langchain";
+import { AIMessage, createAgent, HumanMessage, SystemMessage } from "langchain";
 import {
   createConversation,
   findConversationByIdForUser,
@@ -10,14 +10,27 @@ import {
 } from "../DAO/message.dao.js";
 import AppError from "../utils/AppError.js";
 import model from "../services/ai/main.model.js";
+import { generateTitle } from "../services/ai/title.model.services.js";
 import { sendSuccess } from "../utils/apiResponse.js";
+import {MCPAdapter} from "@langchain/mcp-adapters"
+import { env } from "../config/env.js";
+
+const adapter = new MCPAdapter({
+    servers:{
+      tavily:{
+        url: env.TAVILY_API_KEY
+      }
+    }
+})
+
+const tools = await adapter.listTools()
 
 export async function createConversationController(req, res, next) {
   const { content, conversation: conversationId } = req.body;
   const user = req.user;
   let conversation;
   if (!conversationId) {
-    const title = content.trim().replace(/\s+/g, " ").slice(0, 60);
+    const { title } = await generateTitle(content);
     conversation = await createConversation({ user: user.id, title });
   } else {
     conversation = await findConversationByIdForUser(conversationId, user.id);
@@ -56,15 +69,16 @@ export async function createConversationController(req, res, next) {
   let responseContent = "";
 
   try {
-    const stream = await model.stream([
-      new SystemMessage(`
-        - Your name is downbot
-        - 
-        `),
-      ...messages
-    ]);
+    const agent = createAgent({model,tools})
 
-    for await (const chunk of stream) {
+    const stream = await agent.stream({
+      messages: [new SystemMessage(`- Your name is downbot`),...messages]
+    },
+  {
+    streamMode: "messages"
+  });
+
+    for await (const [chunk] of stream) {
       responseContent += chunk.content;
       res.write(`data: ${JSON.stringify({ chunk: chunk.content })}\n\n`);
     }

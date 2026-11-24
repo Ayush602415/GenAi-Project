@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-const required = ["MONGODB_URI", "ACCESS_TOKEN_SECRET", "REFRESH_TOKEN_SECRET","GROQ_API_KEY"];
+const required = ["MONGODB_URI", "ACCESS_TOKEN_SECRET", "REFRESH_TOKEN_SECRET","COHERE_API_KEY","TAVILY_API_KEY"];
 for (const key of required) {
   if (!process.env[key]) throw new Error(`Missing required environment variable: ${key}`);
 }
@@ -20,5 +20,6 @@ export const env = Object.freeze({
   mongoUri: process.env.MONGODB_URI,
   accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
-  groqApikey: process.env.GROQ_API_KEY
+  cohereApikey: process.env.COHERE_API_KEY,
+  TAVILY_API_KEY: process.env.TAVILY_API_KEY
 });
