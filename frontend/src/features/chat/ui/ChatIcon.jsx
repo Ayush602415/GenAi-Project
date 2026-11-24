@@ -34,5 +34,5 @@ export function UserAvatar({ name = "" }) {
     .map((part) => part[0].toUpperCase())
     .join("") || "Y";
 
-  return <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[11px] bg-gradient-to-br from-violet-500 to-violet-900 text-[11px] font-semibold text-white">{initials}</span>;
+  return <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[11px] border border-lime-300/20 bg-gradient-to-br from-green-500 to-green-950 text-[11px] font-semibold text-lime-50 shadow-[0_0_16px_rgba(0,255,90,0.12)]">{initials}</span>;
 }

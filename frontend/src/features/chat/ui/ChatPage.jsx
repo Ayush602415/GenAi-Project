@@ -73,7 +73,7 @@ export function ChatPage() {
   }
 
   return (
-    <main className="flex h-dvh overflow-hidden bg-[#101012] text-zinc-100 [background-image:radial-gradient(ellipse_at_72%_0%,rgba(116,78,196,0.08),transparent_38%)]">
+    <main className="flex h-dvh overflow-hidden bg-[#030704] text-emerald-50 [background-image:radial-gradient(ellipse_at_72%_0%,rgba(0,255,74,0.11),transparent_40%),radial-gradient(ellipse_at_12%_100%,rgba(0,120,45,0.08),transparent_42%)]">
       <ChatSidebar
         user={user}
         conversations={conversations}

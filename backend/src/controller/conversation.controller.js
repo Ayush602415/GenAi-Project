@@ -70,7 +70,7 @@ export async function createConversationController(req, res, next) {
 
   try {
     const agent = createAgent({model,tools})
-
+    
     const stream = await agent.stream({
       messages: [new SystemMessage(`- Your name is downbot`),...messages]
     },
