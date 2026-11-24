@@ -73,27 +73,29 @@ export function ChatPage() {
   }
 
   return (
-    <main className={`chat-shell${isSidebarOpen ? " sidebar-open" : ""}`}>
+    <main className="flex h-dvh min-h-screen overflow-hidden bg-[#101012] text-zinc-100 [background-image:radial-gradient(ellipse_at_72%_0%,rgba(116,78,196,0.08),transparent_38%)]">
       <ChatSidebar
         user={user}
         conversations={conversations}
         activeConversationId={activeConversationId}
         conversationsStatus={conversationsStatus}
         isSending={isSending}
+        isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         onNewConversation={startNewConversation}
         onSelectConversation={openConversation}
         onLogout={handleLogout}
       />
-      <section className="chat-main">
+      <section className="flex min-w-0 flex-1 flex-col">
         <ChatHeader
           title={activeConversation?.title}
           onMenuClick={() => setIsSidebarOpen(true)}
         />
         {(error || logoutError) && (
-          <div className="chat-error" role="alert">
+          <div className="mx-4 mt-4 flex items-center justify-between gap-3 rounded-xl border border-rose-400/20 bg-rose-950/30 px-4 py-3 text-sm text-rose-200 sm:mx-8 lg:mx-auto lg:w-[min(100%-4rem,780px)]" role="alert">
             <span>{error || logoutError}</span>
             <button
+              className="grid place-items-center text-rose-300 transition hover:text-white"
               onClick={() => {
                 setLogoutError("");
                 if (error) dispatch(clearConversationError());
@@ -104,9 +106,9 @@ export function ChatPage() {
             </button>
           </div>
         )}
-        <div className="conversation-stage" ref={stageRef}>
+        <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto" ref={stageRef}>
           {isLoadingMessages ? (
-            <div className="loading-thread"><span className="loading-spinner" /> Opening your conversation…</div>
+            <div className="flex items-center justify-center gap-3 p-5 text-xs text-zinc-400"><span className="h-4 w-4 animate-spin rounded-full border-2 border-violet-300/25 border-t-violet-300" /> Opening your conversation…</div>
           ) : messages.length ? (
             <ChatThread messages={messages} user={user} isSending={isSending} />
           ) : (
