@@ -5,8 +5,7 @@ const required = [
   "ACCESS_TOKEN_SECRET",
   "REFRESH_TOKEN_SECRET",
   "COHERE_API_KEY",
-  "TAVILY_API_KEY",
-  "GROQ_API_KEY",
+  "TAVILY_API_KEY"
 ];
 for (const key of required) {
   if (!process.env[key])
@@ -30,5 +29,4 @@ export const env = Object.freeze({
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
   cohereApikey: process.env.COHERE_API_KEY,
   TAVILY_API_KEY: process.env.TAVILY_API_KEY,
-  GROQ_API_KEY: process.env.GROQ_API_KEY
 });

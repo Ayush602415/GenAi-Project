@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+button {
+  cursor: pointer;
+}
+
 @utility scrollbar-neon {
   scrollbar-width: thin;
   scrollbar-color: rgb(74 222 128 / 0.45) transparent;

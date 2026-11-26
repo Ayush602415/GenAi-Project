@@ -1,4 +1,4 @@
-import { AIMessage, createAgent, HumanMessage, SystemMessage } from "langchain";
+import { AIMessage, AIMessageChunk, createAgent, HumanMessage, SystemMessage } from "langchain";
 import {
   createConversation,
   findConversationByIdForUser,
@@ -14,6 +14,7 @@ import { generateTitle } from "../services/ai/title.model.services.js";
 import { sendSuccess } from "../utils/apiResponse.js";
 import {MCPAdapter} from "@langchain/mcp-adapters"
 import { env } from "../config/env.js";
+import { generateContextTool, setContextTool } from "../services/ai/tools/memory.tools.js";
 
 const adapter = new MCPAdapter({
     servers:{
@@ -69,19 +70,49 @@ export async function createConversationController(req, res, next) {
   let responseContent = "";
 
   try {
-    const agent = createAgent({model,tools})
+    const agent = createAgent({model,tools: [setContextTool , generateContextTool, ...tools]})
     
-    const stream = await agent.stream({
-      messages: [new SystemMessage(`- Your name is downbot`),...messages]
-    },
+   const stream = await agent.stream(
   {
-    streamMode: "messages"
-  });
-
-    for await (const [chunk] of stream) {
-      responseContent += chunk.content;
-      res.write(`data: ${JSON.stringify({ chunk: chunk.content })}\n\n`);
+    messages: [
+      new SystemMessage("Your name is downbot"),
+      ...messages,
+    ],
+  },
+  {
+    streamMode: "values",
+    configurable:{
+      userId: user.id
     }
+  }
+);
+
+let finalMessage = null;
+
+for await (const state of stream) {
+  const allMessages = state.messages;
+  const lastMessage = allMessages.at(-1);
+
+  if (
+    lastMessage instanceof AIMessage &&
+    !lastMessage.tool_calls?.length
+  ) {
+    finalMessage = lastMessage;
+  }
+}
+
+if (finalMessage) {
+  const content = finalMessage.content;
+
+  responseContent =
+    typeof content === "string"
+      ? content
+      : JSON.stringify(content);
+
+  res.write(
+    `data: ${JSON.stringify({ chunk: responseContent })}\n\n`
+  );
+}
 
     await createMessage({
       role: "assistant",
@@ -93,7 +124,7 @@ export async function createConversationController(req, res, next) {
   } catch (error) {
     console.error("Conversation response stream failed:", error);
     const message = error?.status === 401 || /invalid api key|expired_api_key/i.test(error?.message ?? "")
-      ? "The AI provider rejected GROQ_API_KEY. Update it in backend/.env and restart the API."
+      ? "Cohere rejected COHERE_API_KEY. Check it in backend/.env and restart the API."
       : "Failed to generate a response. Please try again.";
     res.write(
       `event: error\ndata: ${JSON.stringify({
@@ -123,6 +154,7 @@ export async function getMessagesByConversation(req, res, next) {
   if (!conversation) {
     return next(new AppError(404, "Conversation not found"));
   }
-  const messages = await getConversationMessages(conversation.id);
+   const messages = (await getConversationMessages(conversation.id))
   return sendSuccess(res, 200, "Messages fetched successfully", { messages });
 }
+
