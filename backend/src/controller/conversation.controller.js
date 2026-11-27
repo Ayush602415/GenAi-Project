@@ -72,47 +72,31 @@ export async function createConversationController(req, res, next) {
   try {
     const agent = createAgent({model,tools: [setContextTool , generateContextTool, ...tools]})
     
-   const stream = await agent.stream(
+  const stream = await agent.stream(
   {
     messages: [
-      new SystemMessage("Your name is downbot"),
+      new SystemMessage(`-Your name is downbot
+                        - Today's date is ${new Date().toISOString()}`),
       ...messages,
     ],
   },
   {
-    streamMode: "values",
+    streamMode: "messages",
     configurable:{
       userId: user.id
     }
   }
 );
 
-let finalMessage = null;
+    for await (const [chunk] of stream) {
+      if (chunk instanceof AIMessageChunk) {
+        responseContent += chunk.text;
+        res.write(
+          `data: ${JSON.stringify({ chunk: chunk.text })}\n\n`,
+        );
+      }
+    }
 
-for await (const state of stream) {
-  const allMessages = state.messages;
-  const lastMessage = allMessages.at(-1);
-
-  if (
-    lastMessage instanceof AIMessage &&
-    !lastMessage.tool_calls?.length
-  ) {
-    finalMessage = lastMessage;
-  }
-}
-
-if (finalMessage) {
-  const content = finalMessage.content;
-
-  responseContent =
-    typeof content === "string"
-      ? content
-      : JSON.stringify(content);
-
-  res.write(
-    `data: ${JSON.stringify({ chunk: responseContent })}\n\n`
-  );
-}
 
     await createMessage({
       role: "assistant",
