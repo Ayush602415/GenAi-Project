@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: downbot-backend
+    runtime: node
+    plan: free
+
+    buildCommand: npm install
+    startCommand: npm start
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: MONGODB_URI
+        sync: false
+
+      - key: ACCESS_TOKEN_SECRET
+        sync: false
+
+      - key: REFRESH_TOKEN_SECRET
+        sync: false
+
+      - key: COHERE_API_KEY
+        sync: false
+
+      - key: TAVILY_API_KEY
+        sync: false
+
+      - key: LANGSMITH_API_KEY
+        sync: false
+
+      - key: LANGSMITH_TRACING
+        value: "true"
+
+      - key: LANGSMITH_AGENT_ID
+        sync: false
+
+      - key: LANGSMITH_AGENT_ENVIRONMENT
+        value: production
