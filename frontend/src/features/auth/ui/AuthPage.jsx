@@ -5,9 +5,12 @@ import { BrandMark } from "./BrandMark.jsx";
 function Field({ label, type, value, onChange, autoComplete }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-zinc-300">{label}</span>
+      <span className="mb-2 block text-xs font-medium tracking-wide text-emerald-100/65">
+        {label}
+      </span>
+
       <input
-        className="w-full rounded-xl border border-emerald-300/15 bg-[#07100a] px-4 py-3.5 text-[15px] text-white outline-none transition placeholder:text-emerald-100/30 focus:border-lime-400/70 focus:ring-4 focus:ring-lime-400/10"
+        className="w-full rounded-xl border border-white/[0.09] bg-[#080e0b] px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-emerald-400/60 focus:bg-[#0b1510] focus:ring-4 focus:ring-emerald-400/[0.07]"
         type={type}
         value={value}
         onChange={onChange}
@@ -23,7 +26,9 @@ export function AuthPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const { login, register, error, status, clearError } = useAuth();
+
   const isRegister = mode === "register";
   const busy = status === "loading";
 
@@ -34,49 +39,108 @@ export function AuthPage() {
 
   async function submit(event) {
     event.preventDefault();
+
     if (isRegister) await register({ name, email, password });
     else await login({ email, password });
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#030704] px-5 py-12 text-white [background-image:radial-gradient(ellipse_at_50%_0%,rgba(0,255,74,0.14),transparent_48%),radial-gradient(ellipse_at_50%_100%,rgba(0,130,46,0.10),transparent_55%)]">
-      <div className="pointer-events-none absolute -left-40 top-1/3 h-[420px] w-[420px] rounded-full bg-green-500/10 blur-[130px]" />
-      <div className="pointer-events-none absolute -right-40 bottom-0 h-[380px] w-[380px] rounded-full bg-lime-400/[0.07] blur-[120px]" />
-      <div className="relative w-full max-w-[440px]">
-        <div className="mb-10">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050807] px-5 py-12 text-white">
+
+      <div className="pointer-events-none absolute -left-40 top-0 h-[450px] w-[450px] rounded-full bg-emerald-500/[0.09] blur-[150px]" />
+      <div className="pointer-events-none absolute -right-40 bottom-0 h-[450px] w-[450px] rounded-full bg-green-400/[0.08] blur-[150px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-400/[0.04]" />
+
+      <div className="relative w-full max-w-[460px]">
+
+        <div className="mb-9">
           <BrandMark />
         </div>
 
-        <section className="rounded-[28px] border border-emerald-300/15 bg-[#07100a]/90 p-7 shadow-[0_24px_100px_rgba(0,0,0,0.5),0_0_50px_rgba(0,255,90,0.06)] backdrop-blur-xl sm:p-9">
+        <section className="glass-panel rounded-[28px] p-7 shadow-2xl sm:p-10">
+
           <div className="mb-8">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">A little more clarity</p>
-            <h1 className="text-[30px] font-semibold tracking-[-0.04em]">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-300/15 bg-emerald-400/[0.06] px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-emerald-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-lime-400" />
+              DOWNBOT AI WORKSPACE
+            </div>
+
+            <h1 className="text-3xl font-semibold tracking-tight text-white">
               {isRegister ? "Create your account" : "Welcome back"}
             </h1>
-            <p className="mt-2 text-sm leading-6 text-emerald-50/60">
-              {isRegister ? "One calm place for all your AI conversations." : "Sign in to pick up where your ideas left off."}
+
+            <p className="mt-2 text-sm leading-6 text-emerald-100/45">
+              {isRegister
+                ? "Start your journey with your personal AI assistant."
+                : "Your ideas are waiting. Let's continue where you left off."}
             </p>
           </div>
 
-          <div className="mb-7 grid grid-cols-2 rounded-xl border border-emerald-300/10 bg-[#030704] p-1">
-            <button type="button" onClick={() => switchMode("login")} className={`rounded-lg py-2.5 text-sm font-medium transition ${!isRegister ? "bg-[#15351d] text-lime-100 shadow-[0_0_16px_rgba(0,255,90,0.08)]" : "text-emerald-100/45 hover:text-emerald-100/80"}`}>
+          <div className="mb-7 grid grid-cols-2 rounded-xl border border-white/[0.07] bg-[#070c09] p-1">
+            <button
+              type="button"
+              onClick={() => switchMode("login")}
+              className={`rounded-lg py-3 text-xs font-semibold transition ${
+                !isRegister
+                  ? "bg-gradient-to-r from-emerald-500/20 to-lime-400/10 text-lime-200 shadow-inner"
+                  : "text-white/40 hover:text-white"
+              }`}
+            >
               Sign in
             </button>
-            <button type="button" onClick={() => switchMode("register")} className={`rounded-lg py-2.5 text-sm font-medium transition ${isRegister ? "bg-[#15351d] text-lime-100 shadow-[0_0_16px_rgba(0,255,90,0.08)]" : "text-emerald-100/45 hover:text-emerald-100/80"}`}>
+
+            <button
+              type="button"
+              onClick={() => switchMode("register")}
+              className={`rounded-lg py-3 text-xs font-semibold transition ${
+                isRegister
+                  ? "bg-gradient-to-r from-emerald-500/20 to-lime-400/10 text-lime-200 shadow-inner"
+                  : "text-white/40 hover:text-white"
+              }`}
+            >
               Create account
             </button>
           </div>
 
           <form onSubmit={submit} className="space-y-5">
+
             {isRegister && (
-              <Field label="Your name" type="text" value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" />
+              <Field
+                label="Your name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoComplete="name"
+              />
             )}
-            <Field label="Email address" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" />
-            <Field label="Password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete={isRegister ? "new-password" : "current-password"} />
-            {isRegister && <p className="-mt-2 text-xs text-emerald-100/45">Use at least 8 characters, including a letter and a number.</p>}
+
+            <Field
+              label="Email address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
+
+            <Field
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete={isRegister ? "new-password" : "current-password"}
+            />
+
+            {isRegister && (
+              <p className="text-xs text-emerald-100/40">
+                Use at least 8 characters, including a letter and a number.
+              </p>
+            )}
 
             {error && (
-              <div role="alert" className="rounded-xl border border-rose-400/20 bg-rose-400/[0.08] px-4 py-3 text-sm text-rose-200">
+              <div
+                role="alert"
+                className="rounded-xl border border-rose-400/20 bg-rose-400/[0.08] px-4 py-3 text-sm text-rose-200"
+              >
                 {error}
               </div>
             )}
@@ -84,22 +148,35 @@ export function AuthPage() {
             <button
               type="submit"
               disabled={busy}
-              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-lime-400 to-green-400 px-4 py-3.5 text-sm font-bold text-[#041006] shadow-[0_0_24px_rgba(0,255,90,0.18)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-lime-400/20 disabled:cursor-not-allowed disabled:opacity-60"
+              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-lime-400 py-4 text-sm font-bold text-[#041008] shadow-[0_0_25px_rgba(74,222,128,0.18)] transition hover:brightness-110 disabled:opacity-50"
             >
-              {busy ? "Please wait…" : isRegister ? "Create account" : "Continue"}
-              {!busy && <span aria-hidden="true" className="transition group-hover:translate-x-0.5">→</span>}
+              {busy
+                ? "Please wait..."
+                : isRegister
+                  ? "Create account"
+                  : "Continue"}
+
+              {!busy && (
+                <span className="transition group-hover:translate-x-1">→</span>
+              )}
             </button>
           </form>
 
-          <p className="mt-7 text-center text-sm text-emerald-100/45">
-            {isRegister ? "Already have an account?" : "New to Downbot?"}{" "}
-            <button type="button" onClick={() => switchMode(isRegister ? "login" : "register")} className="font-medium text-lime-300 underline decoration-lime-300/30 underline-offset-4 hover:text-lime-200">
+          <p className="mt-8 text-center text-xs text-white/40">
+            {isRegister ? "Already have an account?" : "New to DownBot?"}{" "}
+            <button
+              type="button"
+              onClick={() => switchMode(isRegister ? "login" : "register")}
+              className="font-semibold text-lime-300 hover:text-lime-200"
+            >
               {isRegister ? "Sign in" : "Create an account"}
             </button>
           </p>
         </section>
 
-        <p className="mt-7 text-center text-xs text-emerald-100/35">Your conversations, all in one place.</p>
+        <p className="mt-7 text-center text-[10px] tracking-wide text-white/25">
+          Your conversations. Your context. One intelligent workspace.
+        </p>
       </div>
     </main>
   );
